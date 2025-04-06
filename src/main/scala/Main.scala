@@ -16,4 +16,16 @@ object Main {
     case (_, 0) => List()
     case (row, column) => List(List((row, column))) ++ populateColumns(row, column - 1)
   }
+
+  def displayBoard(board: Board): Unit = {
+    board.foreach { row =>
+      row.foreach {
+        case Stone.Black => print("B ")
+        case Stone.White => print("W ")
+        case Stone.Empty => print(". ")
+      }
+      println()
+    }
+  }
+
 }
