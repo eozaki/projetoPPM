@@ -22,18 +22,18 @@ object Main {
     case row :: tail =>
       displayRow(row)
       println()
-      displayBoard(tail) // Chamada recursiva para imprimir o resto
+      displayBoard(tail)
   }
 
   def displayRow(row: List[Stone]): Unit = row match {
-    case Nil => () // Caso base: linha vazia, termina a recursão
+    case Nil => ()
     case head :: tail =>
       head match {
         case Stone.Black => print("B ")
         case Stone.White => print("W ")
         case Stone.Empty => print(". ")
       }
-      displayRow(tail) // Chamada recursiva para o resto da linha
+      displayRow(tail)
   }
 
 
