@@ -45,7 +45,4 @@ object Game {
     val chosenCoord = lstOpenCoords(index)                            // Acede à coordenada da lista dada por index
     (chosenCoord, newRand)                                            // Retorna a coord e nova seed para números aleatórios
   }
-
-
-
 }
