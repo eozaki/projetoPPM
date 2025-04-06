@@ -1,3 +1,10 @@
+/*
+Autores: Grupo LM8
+Laís Gray
+Luís Pinto
+Erick Ozaki
+*/
+
 import Game.{Board, Coord2D, MyRandom, Stone, playRandomly, populateBoard, populateRows, randomMove}
 
 object Main {
