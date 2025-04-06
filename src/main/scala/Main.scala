@@ -24,5 +24,23 @@ object Main {
     case (_, 0) => List()
     case (row, column) => List(List((row, column))) ++ populateColumns(row, column - 1)
   }
+  
+  def displayBoard(board: Board): Unit = board match {
+    case Nil => ()
+    case row :: tail =>
+      displayRow(row)
+      println()
+      displayBoard(tail)
+  }
 
+  def displayRow(row: List[Stone]): Unit = row match {
+    case Nil => ()
+    case head :: tail =>
+      head match {
+        case Stone.Black => print("B ")
+        case Stone.White => print("W ")
+        case Stone.Empty => print(". ")
+      }
+      displayRow(tail)
+  }
 }
