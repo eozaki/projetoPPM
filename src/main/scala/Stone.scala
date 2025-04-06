@@ -39,10 +39,11 @@ object Game {
     }
   }
 
-  def randomMove(lstOpenCoords: List[Coord2D], rand: MyRandom): (Coord2D, Random) = {
-    if (lstOpenCoords.isEmpty) throw new IllegalArgumentException("Não há coordenadas livres disponíveis.") // caso a lista esteja vazia
-    val (index, newRand) = rand.nextInt(lstOpenCoords.size)           // Gera um índice aleatório com base no tamanho da lista
-    val chosenCoord = lstOpenCoords(index)                            // Acede à coordenada da lista dada por index
-    (chosenCoord, newRand)                                            // Retorna a coord e nova seed para números aleatórios
+  def randomMove(lstOpenCoords: List[Coord2D], rand: MyRandom): (Coord2D, Random) = lstOpenCoords match {
+    case List() => throw new IllegalArgumentException("Não há coordenadas livres disponíveis.") // caso a lista esteja vazia
+    case list => {
+        val (index, newRand) = rand.nextInt(list.size)           // Gera um índice aleatório com base no tamanho da lista
+        val chosenCoord = list(index)                            // Acede à coordenada da lista dada por index
+        (chosenCoord, newRand)                                            // Retorna a coord e nova seed para números aleatórios
   }
 }
