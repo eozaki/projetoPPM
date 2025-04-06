@@ -17,6 +17,7 @@ object Game {
   type Board = List[List[Stone]]
   type Coord2D = (Int, Int) // (row, column)
 
+  // T2
   def play(board: Board, player: Stone, coord: Coord2D, lstOpenCoords: List[Coord2D]): (Option[Board], List[Coord2D]) = (coord, lstOpenCoords) match {
     case (c, l) if validCoord(c, l) => {
       val newBoard = playRow(c._1, c._2, player, board)
