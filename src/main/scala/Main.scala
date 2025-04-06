@@ -1,4 +1,4 @@
-import Game.{Board, Coord2D, Stone, populateBoard, populateRows, MyRandom, randomMove}
+import Game.{Board, Coord2D, MyRandom, Stone, playRandomly, populateBoard, populateRows, randomMove}
 
 object Main {
   def main(args: Array[String]): Unit = {
@@ -6,9 +6,15 @@ object Main {
     val coords = populateRows(3, 2)
 
     // teste T1
-    val coordenadas: List[Coord2D] = List((0, 0), (1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6), (7, 7), (8, 8), (9, 9), (10, 10), (11, 11))
-    val seed = MyRandom(System.currentTimeMillis())
+    val coordenadas: List[Coord2D] = Game.populateRows(5, 5)
+    val seed: MyRandom = MyRandom(System.currentTimeMillis())
     val (coordEsc, proxRand) = randomMove(coordenadas, seed)
     println(s"Movimento escolhido: $coordEsc")
+
+    // test T3
+    val b = Game.populateBoard(5, 5)
+    val s = Stone.White
+    playRandomly(b, seed, s, coordenadas, Game.randomMove )
+
   }
 }
