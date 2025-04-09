@@ -3,29 +3,52 @@ import Game.Stone.Stone
 
 import scala.annotation.tailrec
 
-case class Game(board: Board, coords: List[Coord2D]) {
+// classe principal do jogo
+// recebe: tabuleiro e lista de coordenadas 2D
+case class Game(board: Board, coords: List[Coord2D]) { 
+  // função de jogar
+  // recebe: tabuleiro, jogador, coordenada e lista de coordenadas livres 
+  // retorna: tabuleir e lista de coordenadas livres
   def play(board: Board, player: Stone, coord: Coord2D, lstOpenCoords: List[Coord2D]):(Option[Board], List[Coord2D]) =
     Game.play(board, player, coord, lstOpenCoords)
 }
 
+// define o objeto singleton Game
 object Game {
+  // definição do objeto Stone com enumeração distinta
   object Stone extends Enumeration {
+     // com alias Value para o tipo de stone
     type Stone = Value
+    // enumeração dos valores possíveis
     val Black, White, Empty = Value
   }
 
+  // definição de board como matriz de stones
   type Board = List[List[Stone]]
+  // definição de coordenada como um tuplo de 2 int
   type Coord2D = (Int, Int) // (row, column)
 
   // T2
-  def play(board: Board, player: Stone, coord: Coord2D, lstOpenCoords: List[Coord2D]): (Option[Board], List[Coord2D]) = (coord, lstOpenCoords) match {
+  // função de jogar no jogo
+  // recebe: tabuleiro, jogador, coordenada e lista de coordenadas livres
+  // retorna: tuplo com tabuleiro se jogada válida ou None se inválida e lista de coordenadas abertas após jogada
+  def play(board: Board, player: Stone, coord: Coord2D, lstOpenCoords: List[Coord2D]): (Option[Board], List[Coord2D]) = 
+  // ao tuplo coordenada e lista de coordenadas disponíveis, procura correspondência
+  (coord, lstOpenCoords) match {
+    // à 1ª extração, se c e 1 são válidos 
     case (c, l) if validCoord(c, l) => {
+      // newBoard é o resultado da função playRow
       val newBoard = playRow(c._1, c._2, player, board)
+      // l é o resultado da função remainingCoords
       val l = remainingCoords(lstOpenCoords, coord)
+      // chama a função displayBoard
       displayBoard(newBoard)
+      // imprime a lista l (coordenadas disponíveis)
       println(l)
+      // retorna o tuplo com newBoard, se a jogada foi válida e a lista de coordanedas disponíveis
       (Some(newBoard), l)
     }
+    // se a extração são inválidos, devolve None e a lista de coordenadas
     case (c, l) if !validCoord(c, l) => (None, lstOpenCoords)
   }
 
