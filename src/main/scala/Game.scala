@@ -57,8 +57,11 @@ object Game {
   // retorna: lista de coordenadas disponíveis atualizada 
   private def remainingCoords(l: List[Coord2D], coord: Coord2D): List[Coord2D] = {
     l match {
+      // caso lista vazia, devolve a lista
       case List() => List()
+      // se no par x-y é igual à coordenada do argumento, devolve o resto da lista
       case (x, y) :: xs if x == coord._1 && y == coord._2 => xs
+      // se no par x-y x ou y são diferentes da coordenada do argumento, recursivamente testa o resto da lista
       case (x, y) :: xs if x != coord._1 || y != coord._2 => (x, y) :: remainingCoords(xs, coord)
     }
   }
@@ -67,8 +70,11 @@ object Game {
   // recebe: dois Int, jogador (branco ou preto) e tabuleiro
   // retorna: novo tabuleiro com a posção ocupada
   private def playRow(row: Int, col: Int, player: Stone, board: Board): Board = (row, col, board) match {
+    // caso lista vazia, devolve a lista vazia
     case (_, _, List()) => List()
+    // caso a 1ª coluna, chama função playCol e devolve o resto da lista
     case (1, col, x :: xs) => playCol(col, x, player) :: xs
+    // outro caso, chama recursivamente playRow, decrementanto o n e passando o resto da lista (sem o 1º)
     case (n, col, x :: xs) => x :: playRow(n - 1, col, player, xs)
   }
 
@@ -76,7 +82,9 @@ object Game {
   // recebe: Int que representa a coluna, lista de stones a atualizar e jogador(branco ou preto)
   // retorna: ndevolve lista de pedras com o valor col atualizado
   private def playCol(col: Int, list: List[Game.Stone.Stone], player: Game.Stone.Stone): List[Game.Stone.Stone] = (col, list) match {
+    // caso lista vazia, devolve lista vazia
     case (_, List()) => List()
+    // 
     case (1, _ :: xs) => player :: xs
     case (n, x :: xs) => x :: playCol(n - 1, xs, player)
   }
