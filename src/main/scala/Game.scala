@@ -39,14 +39,12 @@ object Game {
     def surroundingCoords(coord: Coord2D): List[Coord2D] = {
       val (row, col) = coord
       List((row - 1, col), (row + 1, col), (row, col - 1), (row, col + 1))
-        .filter {
-          case (x, y) => x > 0 && x <= board.length && y > 0 && y <= board.head.length
-        }
+        .filter { case (x, y) => x >= 1 && x <= board.length && y >= 1 && y <= board.head.length }
     }
 
     def groupsAndLiberties(start: Coord2D, visited: Set[Coord2D]): (Set[Coord2D], Boolean) = {
       def explore(queue: List[Coord2D], acc: Set[Coord2D], liberty: Boolean): (Set[Coord2D], Boolean) = queue match {
-        case List() => (acc, liberty)
+        case Nil => (acc, liberty)
         case coord :: rest if acc.contains(coord) => explore(rest, acc, liberty)
         case (row, col) :: rest =>
           val stone = stoneAt(row - 1, col - 1, board)
@@ -57,7 +55,9 @@ object Game {
             explore(rest ++ adj, acc + ((row, col)), liberty)
           }
       }
-      explore(List(start), Set(start), false)
+      val (row, col) = start
+      if (stoneAt(row - 1, col - 1, board) != opponent) (Set(), true) // Se não é peça do adversário, retorna grupo vazio
+      else explore(List(start), Set(start), false)
     }
 
     def removeGroup(group: Set[Coord2D], board: Board): Board = {
@@ -100,17 +100,9 @@ object Game {
     visitPositions(positionsList, Set(), board)
   }
 
-  private def stoneAt(row: Int, col: Int, board: Board): Stone = (row, board) match {
-    case (r, _) if r < 1 || r > board.length => Stone.Black
-    case (1, x :: _) => stoneAtCol(col, x)
-    case (_, _ :: xs) => stoneAt(row - 1, col, xs)
-  }
-
-
-  private def stoneAtCol(col: Int, list: List[Stone]): Stone = (col, list) match {
-    case (c, _) if c < 1 || c > list.length => Stone.Black
-    case (1, x :: _) => x
-    case (_, _ :: xs) => stoneAtCol(col - 1, xs)
+  private def stoneAt(row: Int, col: Int, board: Board): Stone = {
+    if (row < 0 || row >= board.length || col < 0 || col >= board.head.length) Stone.Empty
+    else board(row)(col)
   }
 
   private def remainingCoords(l: List[Coord2D], coord: Coord2D): List[Coord2D] = {

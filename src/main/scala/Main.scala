@@ -28,7 +28,7 @@ object Main {
     val (b2, c2) = Game.play(b1.get, b, (1, 2), c1)
     val (b3, c3) = Game.play(b2.get, b, (2, 1), c2)
 
-    val (b4, i) = Game.captureGroupStones(b3.get, w)
+    val (b4, i) = Game.captureGroupStones(b3.get, b)
 
     Game.displayBoard(b4)
     println(s"$i peças capturadas")
