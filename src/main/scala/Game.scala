@@ -243,18 +243,18 @@ object Game {
         (state, None)
 
       case Some(boardAfterPlay) =>
-        val (boardAfterCapture, updatedPlayerCaptured, updatedComputerCaptured) =
-          captureGroupStones(boardAfterPlay, state.currentPlayer, state.playerCaptured, state.computerCaptured)
+        val (boardAfterCapture, opponentCaptured) =
+          captureGroupStones(boardAfterPlay, state.currentPlayer)
 
         val newState = GameState(
           board = boardAfterCapture,
           openCoords = newOpenCoords,
           currentPlayer = if (state.currentPlayer == Stone.Black) Stone.White else Stone.Black,
-          playerCaptured = updatedPlayerCaptured,
-          computerCaptured = updatedComputerCaptured
+          playerCaptured = if (state.currentPlayer != Stone.Black) 0 else opponentCaptured,
+          computerCaptured = if(state.currentPlayer != Stone.Black) opponentCaptured else 0
         )
 
-        val result = checkVictory(updatedPlayerCaptured, updatedComputerCaptured, captureGoal)
+        val result = checkVictory(newState.playerCaptured, newState.computerCaptured, captureGoal)
 
         (newState, result)
     }
