@@ -5,7 +5,7 @@ Luís Pinto
 Erick Ozaki
 */
 
-import Game.{Board, Coord2D, MyRandom, Stone, playRandomly, populateBoard, populateRows, randomMove}
+import Game.{Board, Coord2D, MyRandom, Stone, playRandomly, populateBoard, populateRows, randomMove, samePlayerNeighbors}
 
 object Main {
   def main(args: Array[String]): Unit = {
@@ -25,12 +25,15 @@ object Main {
 //    playRandomly(board, seed, s, coordenadas, Game.randomMove )
 
     val (b1, c1) = Game.play(board, w, (1, 1), coordenadas)
-    val (b2, c2) = Game.play(b1.get, b, (1, 2), c1)
-    val (b3, c3) = Game.play(b2.get, b, (2, 1), c2)
+    val (b2, c2) = Game.play(b1.get, w, (1, 2), c1)
+    val (b22, c22) = Game.play(b2.get, b, (1, 3), c2)
+    val (b3, c3) = Game.play(b22.get, b, (2, 1), c22)
+    val (b4, c4) = Game.play(b3.get, b, (2, 2), c3)
 
-    val (b4, i) = Game.captureGroupStones(b3.get, b)
+    println(samePlayerNeighbors((1, 1), b4.get))
 
-    Game.displayBoard(b4)
-    println(s"$i peças capturadas")
+    val (bf, i) = Game.captureGroupStones(b4.get, b)
+
+    Game.displayBoard(bf)
   }
 }

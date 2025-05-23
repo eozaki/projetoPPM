@@ -33,76 +33,89 @@ object Game {
     case (c, l) if !validCoord(c, l) => (None, lstOpenCoords)
   }
 
+
+  def surroundingCoords(coord: Coord2D, board: Board): List[Coord2D] = {
+    val (row, col) = coord
+    List((row - 1, col), (row + 1, col), (row, col - 1), (row, col + 1))
+      .filter { case (x, y) => x >= 1 && x <= board.length && y >= 1 && y <= board.head.length }
+  }
+
+  def samePlayerNeighbors(pos: Coord2D, board: Board): List[Coord2D] = {
+    val player = stoneAt(pos._1, pos._2, board)
+    surroundingCoords(pos, board).filter { case (row, col) => stoneAt(row, col, board) == player}
+  }
+
+  def samePlayerRegion(toVisit: List[Coord2D], group: Set[Coord2D], player: Stone, board: Board): List[Coord2D] = toVisit match {
+    case List() => group.toList
+    case pos :: remaining if group.contains(pos) => samePlayerRegion(remaining, group, player, board)
+    case pos :: remaining if stoneAt(pos._1, pos._2, board) == player => samePlayerRegion(remaining ++ samePlayerNeighbors(pos, board), group.incl(pos), player, board)
+    case _pos :: remaining => samePlayerRegion(remaining, group, player, board)
+  }
+
+  def hasFreePositionAround(position: Coord2D, board: Board): Boolean = {
+    surroundingCoords(position, board).exists { case neighbor => stoneAt(neighbor._1, neighbor._2, board) == Stone.Empty }
+  }
+
+  def listPositions(board: Board, r: Int = 1): List[Coord2D] = {
+    def listRowPositions(list: List[Stone], row: Int, col: Int = 1): List[Coord2D] = list match {
+      case Nil => Nil
+      case _ :: rest => (row, col) :: listRowPositions(rest, row, col + 1)
+    }
+
+    board match {
+      case Nil => Nil
+      case row :: rest => listRowPositions(row, r) ++ listPositions(rest, r + 1)
+    }
+  }
+
+  def groupsAndLiberties(start: Coord2D, board: Board, player: Stone): (Set[Coord2D], Boolean) = {
+    def liberties(lst: List[Coord2D], board: Board): Boolean = lst match {
+      case List() => false
+      case position :: _remaining if hasFreePositionAround(position, board) => true
+      case _position :: remaining => liberties(remaining, board)
+    }
+
+    val g = samePlayerRegion(List(start), Set(), player, board).toSet
+    val l = liberties(g.toList, board)
+
+//    println(g)
+//    println(l)
+
+    (g, l)
+  }
+
+  def removeGroup(group: Set[Coord2D], board: Board): Board = {
+    group.foldLeft(board)((acc, coord) => updateBoard(acc, coord, Stone.Empty))
+  }
+
+  def updateBoard(board: Board, coord: Coord2D, stone: Stone): Board = {
+    val (row, col) = coord
+    board.updated(row - 1, board(row - 1).updated(col - 1, stone))
+  }
+
+  def visitPositions(coords: List[Coord2D], board: Board, player: Stone, totalCaptured: Int = 0): (Board, Int) = coords match {
+    case List() => (board, totalCaptured)
+    case position :: remaining => groupsAndLiberties(position, board, player) match {
+      case (group, false) => {
+        val newB = removeGroup(group, board)
+        visitPositions(remaining.filter { case pos => !group.contains(pos) }, newB, player, group.size + totalCaptured)
+      }
+      case (group, true) => {
+        visitPositions(remaining.filter { case pos => !group.contains(pos) }, board, player, totalCaptured)
+      }
+    }
+  }
+
   def captureGroupStones(board: Board, player: Stone): (Board, Int) = {
     val opponent = if (player == Stone.Black) Stone.White else Stone.Black
 
-    def surroundingCoords(coord: Coord2D): List[Coord2D] = {
-      val (row, col) = coord
-      List((row - 1, col), (row + 1, col), (row, col - 1), (row, col + 1))
-        .filter { case (x, y) => x >= 1 && x <= board.length && y >= 1 && y <= board.head.length }
-    }
-
-    def groupsAndLiberties(start: Coord2D, visited: Set[Coord2D]): (Set[Coord2D], Boolean) = {
-      def explore(queue: List[Coord2D], acc: Set[Coord2D], liberty: Boolean): (Set[Coord2D], Boolean) = queue match {
-        case Nil => (acc, liberty)
-        case coord :: rest if acc.contains(coord) => explore(rest, acc, liberty)
-        case (row, col) :: rest =>
-          val stone = stoneAt(row - 1, col - 1, board)
-          if (stone == Stone.Empty) explore(rest, acc, true)
-          else if (stone != opponent) explore(rest, acc, liberty)
-          else {
-            val adj = surroundingCoords((row, col))
-            explore(rest ++ adj, acc + ((row, col)), liberty)
-          }
-      }
-      val (row, col) = start
-      if (stoneAt(row - 1, col - 1, board) != opponent) (Set(), true) // Se não é peça do adversário, retorna grupo vazio
-      else explore(List(start), Set(start), false)
-    }
-
-    def removeGroup(group: Set[Coord2D], board: Board): Board = {
-      group.foldLeft(board)((acc, coord) => updateBoard(acc, coord, Stone.Empty))
-    }
-
-    def updateBoard(board: Board, coord: Coord2D, stone: Stone): Board = {
-      val (row, col) = coord
-      board.updated(row - 1, board(row - 1).updated(col - 1, stone))
-    }
-
-    def visitPositions(coords: List[Coord2D], visited: Set[Coord2D], board: Board, totalCaptured: Int = 0): (Board, Int) = coords match {
-      case Nil => (board, totalCaptured)
-      case coord :: rest if visited.contains(coord) => visitPositions(rest, visited, board, totalCaptured)
-      case (row, col) :: rest =>
-        if (stoneAt(row - 1, col - 1, board) != opponent) visitPositions(rest, visited, board, totalCaptured)
-        else {
-          val (group, liberty) = groupsAndLiberties((row, col), Set())
-          if (liberty) visitPositions(rest, visited ++ group, board, totalCaptured)
-          else {
-            val newBoard = removeGroup(group, board)
-            visitPositions(rest, visited ++ group, newBoard, totalCaptured + group.size)
-          }
-        }
-    }
-
-    def listPositions(board: Board, r: Int = 1): List[Coord2D] = {
-      def listRowPositions(list: List[Stone], row: Int, col: Int = 1): List[Coord2D] = list match {
-        case Nil => Nil
-        case _ :: rest => (row, col) :: listRowPositions(rest, row, col + 1)
-      }
-
-      board match {
-        case Nil => Nil
-        case row :: rest => listRowPositions(row, r) ++ listPositions(rest, r + 1)
-      }
-    }
-
     val positionsList = listPositions(board)
-    visitPositions(positionsList, Set(), board)
+    visitPositions(positionsList, board, opponent)
   }
 
-  private def stoneAt(row: Int, col: Int, board: Board): Stone = {
-    if (row < 0 || row >= board.length || col < 0 || col >= board.head.length) Stone.Empty
-    else board(row)(col)
+  def stoneAt(row: Int, col: Int, board: Board): Stone = {
+    if (row < 1 || row > board.length || col < 1 || col > board.head.length) Stone.Empty
+    else board(row - 1)(col - 1)
   }
 
   private def remainingCoords(l: List[Coord2D], coord: Coord2D): List[Coord2D] = {
