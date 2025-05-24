@@ -21,6 +21,9 @@ class AtariGO extends Application {
     val fxmlLoader = new FXMLLoader(getClass.getResource("gui.fxml"))
     val mainViewRoot: Parent = fxmlLoader.load()
     val scene = new Scene(mainViewRoot)
+    // Definir tamanho mínimo
+    primaryStage.setMinWidth(600)
+    primaryStage.setMinHeight(400)
     primaryStage.setScene(scene)
     primaryStage.show()
   }

@@ -51,17 +51,17 @@
       <Circle fx:id="_5_3" fill="TRANSPARENT" layoutX="180.0" layoutY="281.0" radius="20.0" stroke="#332f2f" strokeType="INSIDE" />
       <Circle fx:id="_5_4" fill="TRANSPARENT" layoutX="230.0" layoutY="280.0" radius="20.0" stroke="#332f2f" strokeType="INSIDE" />
       <Circle fx:id="_5_5" fill="TRANSPARENT" layoutX="280.0" layoutY="280.0" radius="20.0" stroke="#332f2f" strokeType="INSIDE" />
-      <Button fx:id="btn_novoJogo" layoutX="360.0" layoutY="224.0" mnemonicParsing="false" onMouseClicked="#btn_novoJogoClicked" prefHeight="26.0" prefWidth="100.0" text="Novo jogo" />
-      <TextField fx:id="tf_pecCapt" layoutX="530.0" layoutY="90.0" prefHeight="26.0" prefWidth="40.0" />
-      <Label layoutX="429.0" layoutY="93.0" text="Peças a capturar:" />
-      <TextField fx:id="tf_tempMaxJog" layoutX="530.0" layoutY="50.0" prefHeight="26.0" prefWidth="40.0" />
-      <Label layoutX="348.0" layoutY="54.0" text="Tempo máximo de jogada (seg):" />
-      <Label layoutX="361.0" layoutY="154.0" text="Dificuldade:" />
-      <Slider fx:id="sld_dific" blockIncrement="1.0" layoutX="449.0" layoutY="155.0" majorTickUnit="1.0" max="10.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
-      <Button fx:id="btn_carregJogo" layoutX="360.0" layoutY="261.0" mnemonicParsing="false" onMouseClicked="#btn_carregJogoClicked" prefHeight="26.0" prefWidth="100.0" text="Carregar jogo" />
-      <Button fx:id="btn_undoJogada" layoutX="469.0" layoutY="224.0" mnemonicParsing="false" onMouseClicked="#btn_undoJogadaClicked" prefHeight="26.0" prefWidth="100.0" text="Undo" />
-      <Button fx:id="btn_guardarJogo" layoutX="469.0" layoutY="261.0" mnemonicParsing="false" onMouseClicked="#btn_guardarJogoClicked" prefHeight="26.0" prefWidth="100.0" text="Guardar" />
-      <Button fx:id="btn_sair" layoutX="469.0" layoutY="359.0" mnemonicParsing="false" onMouseClicked="#btn_sairClicked" prefHeight="26.0" prefWidth="100.0" text="Sair" />
-      <TextField fx:id="tf_nomeficheiro" layoutX="361.0" layoutY="297.0" prefHeight="26.0" prefWidth="209.0" />
+      <Button fx:id="btn_novoJogo" layoutX="360.0" layoutY="224.0" mnemonicParsing="false" onMouseClicked="#btn_novoJogoClicked" prefHeight="26.0" prefWidth="100.0" text="Novo jogo" AnchorPane.rightAnchor="140.0" />
+      <TextField fx:id="tf_pecCapt" layoutX="530.0" layoutY="90.0" prefHeight="26.0" prefWidth="40.0" AnchorPane.rightAnchor="30.0" />
+      <Label layoutX="429.0" layoutY="93.0" text="Peças a capturar:" AnchorPane.rightAnchor="81.6" />
+      <TextField fx:id="tf_tempMaxJog" layoutX="530.0" layoutY="50.0" prefHeight="26.0" prefWidth="40.0" AnchorPane.rightAnchor="30.0" />
+      <Label layoutX="348.0" layoutY="54.0" text="Tempo máximo de jogada (seg):" AnchorPane.rightAnchor="81.6" />
+      <Label layoutX="361.0" layoutY="154.0" text="Dificuldade:" AnchorPane.rightAnchor="176.6" />
+      <Slider fx:id="sld_dific" blockIncrement="1.0" layoutX="449.0" layoutY="155.0" majorTickUnit="1.0" max="10.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" snapToTicks="true" AnchorPane.rightAnchor="11.0" />
+      <Button fx:id="btn_carregJogo" layoutX="360.0" layoutY="261.0" mnemonicParsing="false" onMouseClicked="#btn_carregJogoClicked" prefHeight="26.0" prefWidth="100.0" text="Carregar jogo" AnchorPane.rightAnchor="140.0" />
+      <Button fx:id="btn_undoJogada" layoutX="469.0" layoutY="224.0" mnemonicParsing="false" onMouseClicked="#btn_undoJogadaClicked" prefHeight="26.0" prefWidth="100.0" text="Undo" AnchorPane.rightAnchor="31.0" />
+      <Button fx:id="btn_guardarJogo" layoutX="469.0" layoutY="261.0" mnemonicParsing="false" onMouseClicked="#btn_guardarJogoClicked" prefHeight="26.0" prefWidth="100.0" text="Guardar" AnchorPane.rightAnchor="31.0" />
+      <Button fx:id="btn_sair" layoutX="469.0" layoutY="359.0" mnemonicParsing="false" onMouseClicked="#btn_sairClicked" prefHeight="26.0" prefWidth="100.0" text="Sair" AnchorPane.bottomAnchor="14.600000000000001" AnchorPane.rightAnchor="31.0" />
+      <TextField fx:id="tf_nomeficheiro" layoutX="361.0" layoutY="297.0" prefHeight="26.0" prefWidth="209.0" AnchorPane.rightAnchor="29.400000000000006" />
    </children>
 </AnchorPane>
