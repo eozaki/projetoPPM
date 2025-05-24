@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI">
+   <children>
+      <Canvas height="296.0" layoutX="30.0" layoutY="30.0" width="301.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="269.0" AnchorPane.topAnchor="30.0">
+         <cursor>
+            <Cursor fx:constant="DEFAULT" />
+         </cursor></Canvas>
+      <Line endX="-99.99998474121094" endY="-54.599998474121094" layoutX="130.0" layoutY="85.0" startX="-99.99998474121094" startY="240.0" />
+      <Line endX="200.0" layoutX="130.0" layoutY="325.0" startX="-100.0" />
+      <Circle fx:id="_1_1" fill="#ffffff00" layoutX="80.0" layoutY="80.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" />
+      <Line endX="-99.99998474121094" endY="-54.599998474121094" layoutX="380.0" layoutY="85.0" startX="-99.99998474121094" startY="240.0" />
+      <Line endX="200.0" layoutX="130.0" layoutY="30.0" startX="-100.0" />
+      <Line endX="-99.99998474121094" endY="-54.599998474121094" layoutX="180.0" layoutY="85.0" startX="-99.99998474121094" startY="240.0" />
+      <Line endX="-99.99998474121094" endY="-54.599998474121094" layoutX="230.0" layoutY="85.0" startX="-99.99998474121094" startY="240.0" />
+      <Line endX="-99.99998474121094" endY="-54.599998474121094" layoutX="280.0" layoutY="85.0" startX="-99.99998474121094" startY="240.0" />
+      <Line endX="-99.99998474121094" endY="-54.599998474121094" layoutX="430.0" layoutY="85.0" startX="-99.99998474121094" startY="240.0" />
+      <Line endX="-99.99998474121094" endY="-54.599998474121094" layoutX="330.0" layoutY="85.0" startX="-99.99998474121094" startY="240.0" />
+      <Line endX="200.0" layoutX="130.0" layoutY="280.0" startX="-100.0" />
+      <Line endX="200.0" layoutX="130.0" layoutY="230.0" startX="-100.0" />
+      <Line endX="200.0" layoutX="130.0" layoutY="180.0" startX="-100.0" />
+      <Line endX="200.0" layoutX="130.0" layoutY="130.0" startX="-100.0" />
+      <Line endX="200.0" layoutX="130.0" layoutY="80.0" startX="-100.0" />
+      <Circle fx:id="_1_2" fill="TRANSPARENT" layoutX="130.0" layoutY="81.0" radius="20.0" stroke="#332f2f" strokeType="INSIDE" />
+      <Circle fx:id="_1_3" fill="TRANSPARENT" layoutX="180.0" layoutY="81.0" radius="20.0" stroke="#332f2f" strokeType="INSIDE" />
+      <Circle fx:id="_1_4" fill="TRANSPARENT" layoutX="230.0" layoutY="80.0" radius="20.0" stroke="#332f2f" strokeType="INSIDE" />
+      <Circle fx:id="_1_5" fill="TRANSPARENT" layoutX="280.0" layoutY="80.0" radius="20.0" stroke="#332f2f" strokeType="INSIDE" />
+      <Circle fx:id="_2_1" fill="TRANSPARENT" layoutX="81.0" layoutY="130.0" radius="20.0" stroke="#332f2f" strokeType="INSIDE" />
+      <Circle fx:id="_2_2" fill="TRANSPARENT" layoutX="131.0" layoutY="131.0" radius="20.0" stroke="#332f2f" strokeType="INSIDE" />
+      <Circle fx:id="_2_3" fill="TRANSPARENT" layoutX="181.0" layoutY="131.0" radius="20.0" stroke="#332f2f" strokeType="INSIDE" />
+      <Circle fx:id="_2_4" fill="TRANSPARENT" layoutX="231.0" layoutY="130.0" radius="20.0" stroke="#332f2f" strokeType="INSIDE" />
+      <Circle fx:id="_2_5" fill="TRANSPARENT" layoutX="281.0" layoutY="130.0" radius="20.0" stroke="#332f2f" strokeType="INSIDE" />
+      <Circle fx:id="_3_1" fill="TRANSPARENT" layoutX="81.0" layoutY="179.0" radius="20.0" stroke="#332f2f" strokeType="INSIDE" />
+      <Circle fx:id="_3_2" fill="TRANSPARENT" layoutX="131.0" layoutY="180.0" radius="20.0" stroke="#332f2f" strokeType="INSIDE" />
+      <Circle fx:id="_3_3" fill="TRANSPARENT" layoutX="181.0" layoutY="180.0" radius="20.0" stroke="#332f2f" strokeType="INSIDE" />
+      <Circle fx:id="_3_4" fill="TRANSPARENT" layoutX="231.0" layoutY="179.0" radius="20.0" stroke="#332f2f" strokeType="INSIDE" />
+      <Circle fx:id="_3_5" fill="TRANSPARENT" layoutX="281.0" layoutY="179.0" radius="20.0" stroke="#332f2f" strokeType="INSIDE" />
+      <Circle fx:id="_4_1" fill="TRANSPARENT" layoutX="81.0" layoutY="229.0" radius="20.0" stroke="#332f2f" strokeType="INSIDE" />
+      <Circle fx:id="_4_2" fill="TRANSPARENT" layoutX="131.0" layoutY="230.0" radius="20.0" stroke="#332f2f" strokeType="INSIDE" />
+      <Circle fx:id="_4_3" fill="TRANSPARENT" layoutX="181.0" layoutY="230.0" radius="20.0" stroke="#332f2f" strokeType="INSIDE" />
+      <Circle fx:id="_4_4" fill="TRANSPARENT" layoutX="231.0" layoutY="229.0" radius="20.0" stroke="#332f2f" strokeType="INSIDE" />
+      <Circle fx:id="_4_5" fill="TRANSPARENT" layoutX="281.0" layoutY="229.0" radius="20.0" stroke="#332f2f" strokeType="INSIDE" />
+      <Circle fx:id="_5_1" fill="TRANSPARENT" layoutX="80.0" layoutY="280.0" radius="20.0" stroke="#332f2f" strokeType="INSIDE" />
+      <Circle fx:id="_5_2" fill="TRANSPARENT" layoutX="130.0" layoutY="281.0" radius="20.0" stroke="#332f2f" strokeType="INSIDE" />
+      <Circle fx:id="_5_3" fill="TRANSPARENT" layoutX="180.0" layoutY="281.0" radius="20.0" stroke="#332f2f" strokeType="INSIDE" />
+      <Circle fx:id="_5_4" fill="TRANSPARENT" layoutX="230.0" layoutY="280.0" radius="20.0" stroke="#332f2f" strokeType="INSIDE" />
+      <Circle fx:id="_5_5" fill="TRANSPARENT" layoutX="280.0" layoutY="280.0" radius="20.0" stroke="#332f2f" strokeType="INSIDE" />
+      <Button fx:id="btn_novoJogo" layoutX="360.0" layoutY="224.0" mnemonicParsing="false" onMouseClicked="#btn_novoJogoClicked" prefHeight="26.0" prefWidth="100.0" text="Novo jogo" AnchorPane.rightAnchor="140.0" />
+      <TextField fx:id="tf_pecCapt" layoutX="530.0" layoutY="90.0" prefHeight="26.0" prefWidth="40.0" AnchorPane.rightAnchor="30.0" />
+      <Label layoutX="429.0" layoutY="93.0" text="Peças a capturar:" AnchorPane.rightAnchor="81.6" />
+      <TextField fx:id="tf_tempMaxJog" layoutX="530.0" layoutY="50.0" prefHeight="26.0" prefWidth="40.0" AnchorPane.rightAnchor="30.0" />
+      <Label layoutX="348.0" layoutY="54.0" text="Tempo máximo de jogada (seg):" AnchorPane.rightAnchor="81.6" />
+      <Label layoutX="361.0" layoutY="154.0" text="Dificuldade:" AnchorPane.rightAnchor="176.6" />
+      <Slider fx:id="sld_dific" blockIncrement="1.0" layoutX="449.0" layoutY="155.0" majorTickUnit="1.0" max="10.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" snapToTicks="true" AnchorPane.rightAnchor="11.0" />
+      <Button fx:id="btn_carregJogo" layoutX="360.0" layoutY="261.0" mnemonicParsing="false" onMouseClicked="#btn_carregJogoClicked" prefHeight="26.0" prefWidth="100.0" text="Carregar jogo" AnchorPane.rightAnchor="140.0" />
+      <Button fx:id="btn_undoJogada" layoutX="469.0" layoutY="224.0" mnemonicParsing="false" onMouseClicked="#btn_undoJogadaClicked" prefHeight="26.0" prefWidth="100.0" text="Undo" AnchorPane.rightAnchor="31.0" />
+      <Button fx:id="btn_guardarJogo" layoutX="469.0" layoutY="261.0" mnemonicParsing="false" onMouseClicked="#btn_guardarJogoClicked" prefHeight="26.0" prefWidth="100.0" text="Guardar" AnchorPane.rightAnchor="31.0" />
+      <Button fx:id="btn_sair" layoutX="469.0" layoutY="359.0" mnemonicParsing="false" onMouseClicked="#btn_sairClicked" prefHeight="26.0" prefWidth="100.0" text="Sair" AnchorPane.bottomAnchor="14.600000000000001" AnchorPane.rightAnchor="31.0" />
+      <TextField fx:id="tf_nomeficheiro" layoutX="361.0" layoutY="297.0" prefHeight="26.0" prefWidth="209.0" AnchorPane.rightAnchor="29.400000000000006" />
+   </children>
+</AnchorPane>

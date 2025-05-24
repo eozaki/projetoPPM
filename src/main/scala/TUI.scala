@@ -1,19 +1,18 @@
 import Game._
-import javafx.application.Application
-import javafx.fxml.FXMLLoader
-import javafx.scene.{Parent, Scene}
-import javafx.stage.Stage
-
 import scala.io.StdIn.readLine
 
-object Tui {
+object TUI {
+
+  case class Settings(boardWidth: Int, boardHeight: Int, captureGoal: Int, timeLimitMillis: Long, difficulty: String)
+
   def start(): Unit = {
-    val initialState = criarEstadoInicial()
-    mainMenu(List(initialState))
+    val settings = Settings(5, 5, 3, 10000L, "facil")
+    val initialState = criarEstadoInicial(settings)
+    mainMenu(settings, List(initialState))
   }
 
   @scala.annotation.tailrec
-  def mainMenu(history: List[GameState]): Unit = {
+  def mainMenu(settings: Settings, history: List[GameState]): Unit = {
     println("\n--- Atari Go ---")
     println("1. Novo jogo")
     println("2. Alterar dimensões do tabuleiro")
@@ -21,35 +20,24 @@ object Tui {
     println("4. Definir tempo máximo por jogada")
     println("5. Definir nível de dificuldade")
     println("6. Carregar jogo")
-    println("7. Jogar na GUI")
     println("0. Sair")
 
     readLine("Escolha uma opção: ") match {
-      case "1" => jogoMenu(history)
+      case "1" => jogoMenu(settings, history)
       case "2" =>
         val (w, h) = lerDimensoes()
-        Settings.boardWidth = w
-        Settings.boardHeight = h
-        val newState = criarEstadoInicial()
-        mainMenu(List(newState))
+        val newSettings = settings.copy(boardWidth = w, boardHeight = h)
+        val newState = criarEstadoInicial(newSettings)
+        mainMenu(newSettings, List(newState))
       case "3" =>
         val n = lerNumero("Número de capturas para vencer: ")
-        Settings.captureGoal = n
-        mainMenu(history)
+        mainMenu(settings.copy(captureGoal = n), history)
       case "4" =>
         val t = lerNumero("Tempo máximo por jogada (ms): ")
-        Settings.timeLimitMillis = t.toLong
-        mainMenu(history)
+        mainMenu(settings.copy(timeLimitMillis = t.toLong), history)
       case "5" =>
-        val d = readLine("Dificuldade (inteiro 0 a 10 - agressividade do computador ao jogar): ").toInt
-
-        d >= 0 && d <= 10 match {
-          case true => {
-            Settings.difficulty = 0
-            mainMenu(history)
-          }
-          case false => println(s"Dificuldade inválida ($d). A dificuldade anterior foi mantida.")
-        }
+        val d = readLine("Dificuldade (facil / dificil): ")
+        mainMenu(settings.copy(difficulty = d), history)
       case "6" =>
         val nome = readLine("Nome do ficheiro (sem .txt): ").trim
         carregarJogo(nome) match {
@@ -57,24 +45,21 @@ object Tui {
             println("Jogo carregado com sucesso!\n")
             Game.displayBoard(state.board)
             println()
-            jogoMenu(List(state))
+            jogoMenu(settings, List(state))
           case None =>
             println("Erro ao carregar jogo!")
-            mainMenu(history)
+            mainMenu(settings, history)
         }
-      case "7" => {
-        Application.launch(classOf[AtariGO])
-      }
       case "0" =>
         println("A sair do jogo. Até breve!")
       case _ =>
         println("Opção inválida.")
-        mainMenu(history)
+        mainMenu(settings, history)
     }
   }
 
   @scala.annotation.tailrec
-  def jogoMenu(history: List[GameState]): Unit = {
+  def jogoMenu(settings: Settings, history: List[GameState]): Unit = {
     //val state = history.head
     //Game.displayBoard(state.board)
     //println()
@@ -86,7 +71,7 @@ object Tui {
     println("0. Sair")
 
     readLine("Escolha uma opção: ") match {
-      case "1" => jogarTurnoJogador(history)
+      case "1" => jogarTurnoJogador(settings, history)
       case "2" =>
         val (maybePrev, newHist) = undo(history)
         maybePrev match {
@@ -94,80 +79,77 @@ object Tui {
             println("Última jogada anulada.")
             Game.displayBoard(newHist.head.board)
             println()
-            jogoMenu(newHist)
+            jogoMenu(settings, newHist)
           case None =>
             println("Não é possível anular.")
-            jogoMenu(history)
+            jogoMenu(settings, history)
         }
       case "3" =>
         val nome = readLine("Nome do ficheiro (sem .txt): ").trim
         guardarJogo(history.head, nome)
-        jogoMenu(history)
+        jogoMenu(settings, history)
       case "4" =>
-        val newState = criarEstadoInicial()
-        mainMenu(List(newState))
+        val newState = criarEstadoInicial(settings)
+        mainMenu(settings, List(newState))
       case "0" =>
         println("A voltar ao menu principal.")
-        mainMenu(history)
+        mainMenu(settings, history)
       case _ =>
         println("Opção inválida.")
-        jogoMenu(history)
+        jogoMenu(settings, history)
     }
   }
 
-  def jogarTurnoJogador(history: List[GameState]): Unit = {
+  def jogarTurnoJogador(settings: Settings, history: List[GameState]): Unit = {
     val state = history.head
 
-    println(s"Jogador (preto), introduz a linha e a coluna (tens ${Settings.timeLimitMillis / 1000} segundos):")
+    println(s"Jogador (preto), introduz a linha e a coluna (tens ${settings.timeLimitMillis / 1000} segundos):")
     val startTime = System.currentTimeMillis()
     val input = readLine().split(" ").map(_.toInt)
     val endTime = System.currentTimeMillis()
 
-    if (isTimeExceeded(startTime, endTime, Settings.timeLimitMillis)) {
+    if (isTimeExceeded(startTime, endTime, settings.timeLimitMillis)) {
       println("⏱️ Tempo esgotado! Jogada perdida.")
       val skipped = state.copy(currentPlayer = Stone.White)
-      jogarComputador(skipped :: history)
+      jogarComputador(settings, skipped :: history)
     } else {
       val coord = (input(0), input(1))
-      val (newState, maybeVictory) = makeMove(state, coord, Settings.captureGoal)
+      val (newState, maybeVictory) = makeMove(state, coord, settings.captureGoal)
       maybeVictory match {
         case Some(msg) =>
           Game.displayBoard(newState.board)
           println(s"🏁 $msg")
-          mainMenu(newState :: history)
+          mainMenu(settings, newState :: history)
         case None =>
-          jogarComputador(newState :: history)
+          jogarComputador(settings, newState :: history)
       }
     }
   }
 
-  def jogarComputador(history: List[GameState]): Unit = {
+  def jogarComputador(settings: Settings, history: List[GameState]): Unit = {
     val state = history.head
     val rand = MyRandom(System.currentTimeMillis())
 
     println("Computador (branco) a jogar...")
-    val (coord, _newRand) = chooseComputerMove(state.board, state.openCoords, rand, Stone.White)
-    val (newState, maybeVictory) = makeMove(state, coord, Settings.captureGoal)
-
-    println(s"Jogada escolhida para o computador: $coord")
+    val (coord, newRand) = randomMove(state.openCoords, rand)
+    val (newState, maybeVictory) = makeMove(state, coord, settings.captureGoal)
 
     maybeVictory match {
       case Some(msg) =>
         //Game.displayBoard(newState.board)
         //1println(s"🏁 $msg")
-        mainMenu(newState :: history)
+        mainMenu(settings, newState :: history)
       case None =>
-        jogoMenu(newState :: history)
+        jogoMenu(settings, newState :: history)
     }
-    val (latestBoard, _i) = Game.captureGroupStones(newState.board, Stone.White)
     Game.displayBoard(newState.board)
     println()
-    jogoMenu(newState :: history)
+    jogoMenu(settings, newState :: history)
   }
 
-  def criarEstadoInicial(): GameState = {
-    val board = populateBoard(Settings.boardHeight, Settings.boardWidth)
-    val coords = populateRows(Settings.boardHeight, Settings.boardWidth)
+  def criarEstadoInicial(settings: Settings): GameState = {
+    val board = populateBoard(settings.boardHeight, settings.boardWidth)
+    val coords = populateRows(settings.boardHeight, settings.boardWidth)
     GameState(board, coords, Stone.Black, 0, 0)
   }
 
@@ -266,4 +248,5 @@ object Tui {
   def extrairBloco(lines: List[String], inicio: String, fim: Set[String]): List[String] = {
     lines.dropWhile(_ != inicio).drop(1).takeWhile(line => !fim.contains(line.trim))
   }
+
 }
