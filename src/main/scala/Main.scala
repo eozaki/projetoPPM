@@ -12,6 +12,6 @@ import scala.io.StdIn.readLine
 
 object Main {
   def main(args: Array[String]): Unit = {
-    new tui().TUI.start()
+    new Tui().TUI.start()
   }
 }

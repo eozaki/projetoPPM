@@ -1,13 +1,10 @@
 import Game._
 import scala.io.StdIn.readLine
 
-class tui {
+class Tui {
   object TUI {
-
-    case class Settings(boardWidth: Int, boardHeight: Int, captureGoal: Int, timeLimitMillis: Long, difficulty: String)
-
     def start(): Unit = {
-      val settings = Settings(5, 5, 3, 10000L, "facil")
+      val settings = Settings(5, 5, 3, 10000L, 0.0)
       val initialState = criarEstadoInicial(settings)
       mainMenu(settings, List(initialState))
     }
@@ -37,8 +34,11 @@ class tui {
           val t = lerNumero("Tempo máximo por jogada (ms): ")
           mainMenu(settings.copy(timeLimitMillis = t.toLong), history)
         case "5" =>
-          val d = readLine("Dificuldade (facil / dificil): ")
-          mainMenu(settings.copy(difficulty = d), history)
+          val d = readLine("Dificuldade (0 ~ 1 - agressividade do computador ao jogar): ").toDouble
+          d >= 0.0 && d <= 1.0 match {
+            case true => mainMenu(settings.copy(difficulty = d), history)
+            case false => println(s"Dificuldade inválida ($d). A dificuldade anterior foi mantida.")
+          }
         case "6" =>
           val nome = readLine("Nome do ficheiro (sem .txt): ").trim
           carregarJogo(nome) match {
