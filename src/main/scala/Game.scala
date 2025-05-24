@@ -25,8 +25,7 @@ object Game {
     case (c, l) if validCoord(c, l) => {
       val newBoard = playRow(c._1, c._2, player, board)
       val l = remainingCoords(lstOpenCoords, coord)
-      displayBoard(newBoard) // n ter aña mm funçao
-      println(l)
+//      displayBoard(newBoard) // n ter aña mm funçao
       (Some(newBoard), l)
     }
     case (c, l) if !validCoord(c, l) => (None, lstOpenCoords)
@@ -252,6 +251,7 @@ object Game {
         )
 
         val result = checkVictory(newState.playerCaptured, newState.computerCaptured, captureGoal)
+        displayBoard(boardAfterCapture)
 
         (newState, result)
     }
