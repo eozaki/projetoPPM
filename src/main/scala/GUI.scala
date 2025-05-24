@@ -4,7 +4,7 @@ import javafx.scene.control.{Button, Slider, TextField}
 import javafx.scene.input.MouseEvent
 import javafx.scene.shape.Circle
 import Game._
-import TUI._
+import Tui._
 import javafx.scene.control.Alert
 import javafx.scene.control.Alert.AlertType
 import javafx.scene.paint.Color
@@ -92,14 +92,21 @@ class GUI {
           // guarda antes da jogada
           gameHistory = state :: gameHistory
           val (nextState, maybeVictory) = makeMove(state, coord, 3)
-          currentState = Some(nextState)
-          atualizarTabuleiro(nextState)
 
-          maybeVictory match {
-            case Some(msg) => mostrarPopup(msg)
-            case None => jogarComputador(nextState)
+          if (nextState.board != state.board) {
+            // Jogada válida
+            gameHistory = state :: gameHistory
+            currentState = Some(nextState)
+            atualizarTabuleiro(nextState)
+
+            maybeVictory match {
+              case Some(msg) => mostrarPopup(msg)
+              case None => jogarComputador(nextState)
+            }
+          } else {
+            // Jogada inválida
+            mostrarPopup("Jogada inválida: posição ocupada.")
           }
-
         case _ =>
       }
     })
@@ -109,7 +116,7 @@ class GUI {
     // guarda antes da jogada
     gameHistory = state :: gameHistory
 
-    val (coordBot, _) = randomMove(state.openCoords, MyRandom(System.currentTimeMillis()))
+    val (coordBot, _) = chooseComputerMove(state.board, state.openCoords, MyRandom(System.currentTimeMillis()), Stone.White)
     val (newState, maybeVictory) = makeMove(state, coordBot, 3)
 
     currentState = Some(newState)
@@ -141,17 +148,25 @@ class GUI {
 
   @FXML
   def btn_novoJogoClicked(): Unit = {
+    val width = 5
+    val height = 5
     val captureGoal = tf_pecCapt.getText.trim.toIntOption.getOrElse(3)
-    val timeLimitMillis = tf_tempMaxJog.getText.trim.toIntOption.getOrElse(10000)
-    val dificuldade = if (sld_dific.getValue <= 3) "facil"
-    else if (sld_dific.getValue >= 7) "dificil"
-    else "media"
+    val timeLimit = tf_tempMaxJog.getText.trim.toIntOption.getOrElse(10000)
+    val dificuldade = sld_dific.getValue.toInt
+    println(s"Dificuldade: $dificuldade")
 
-    val settings = Settings(5, 5, captureGoal, timeLimitMillis, dificuldade)
-    val newState = criarEstadoInicial(settings)
+    Settings.boardWidth = width
+    Settings.boardHeight = height
+    Settings.captureGoal = captureGoal
+    Settings.timeLimitMillis = timeLimit
+    Settings.difficulty = dificuldade
+    val newState = criarEstadoInicial()
+
     currentState = Some(newState)
     gameHistory = List()
     atualizarTabuleiro(newState)
+    mostrarPopup("Jogo reiniciado.")
+
   }
 
   @FXML
@@ -197,32 +212,6 @@ class GUI {
         mostrarPopup("Jogo carregado com sucesso.")
       case None =>
         mostrarPopup("Erro ao carregar o jogo. Verifique o nome do ficheiro.")
-    }
-  }
-
-  @FXML
-  def btn_reiniciarClicked(): Unit = {
-    currentState match {
-      case Some(state) =>
-        val width = state.board.head.length
-        val height = state.board.length
-        val captureGoal = tf_pecCapt.getText.trim.toIntOption.getOrElse(3)
-        val timeLimit = tf_tempMaxJog.getText.trim.toIntOption.getOrElse(10000)
-        val dificuldade =
-          if (sld_dific.getValue <= 3) "facil"
-          else if (sld_dific.getValue >= 7) "dificil"
-          else "media"
-
-        val settings = Settings(width, height, captureGoal, timeLimit, dificuldade)
-        val newState = criarEstadoInicial(settings)
-
-        currentState = Some(newState)
-        gameHistory = List()
-        atualizarTabuleiro(newState)
-        mostrarPopup("Jogo reiniciado.")
-
-      case None =>
-        mostrarPopup("Não há jogo ativo para reiniciar.")
     }
   }
 

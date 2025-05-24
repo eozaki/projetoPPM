@@ -29,7 +29,7 @@ class AtariGO extends Application {
 
 object Main  {
   def main(args: Array[String]): Unit = {
-    //new tui().TUI.start()
+    // Tui.start()
     Application.launch(classOf[AtariGO], args: _*)
   }
 }

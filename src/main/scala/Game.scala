@@ -187,6 +187,7 @@ object Game {
   def randomMove(lstOpenCoords: List[Coord2D], rand: MyRandom): (Coord2D, MyRandom) = lstOpenCoords match {
     case List() => throw new IllegalArgumentException("Não há coordenadas livres disponíveis.") // caso a lista esteja vazia
     case list =>
+      println(s"Jogada burra")
       val (index, newRand) = rand.nextInt(list.size) // Gera um índice aleatório com base no tamanho da lista
       val chosenCoord = list(index) // Acede à coordenada da lista dada por index
       (chosenCoord, newRand) // Retorna a coord e nova seed para números aleatórios
@@ -194,21 +195,26 @@ object Game {
 
   def playSmart(board: Board, rand: MyRandom, player: Stone, lstOpenCoords: List[Coord2D]): (Coord2D, MyRandom) = {
     val opponentPositions = findAttackableStonesFor(opponentOf(player), board)
-//    println(s"Posicoes adversarias a atacar: $opponentPositions")
+    // println(s"Posicoes adversarias a atacar: $opponentPositions")
 
     val (positionToAttack, newRand) = rand.nextInt(opponentPositions.length)
-//    println(s"Posicao escolhida para atacar: $positionToAttack")
+    // println(s"Posicao escolhida para atacar: $positionToAttack")
 
     val possiblePlays = surroundingCoords(opponentPositions(positionToAttack), board)
-      .filter { case coord2D => lstOpenCoords.contains(coord2D) }
+      .filter { case coord2D => stoneAt(coord2D, board) == Stone.Empty }
+    // println(s"Coordenadas livres no tabuleiro: $lstOpenCoords")
     val (chosenPlay, lastRand) = rand.nextInt(possiblePlays.length)
 
-    (possiblePlays(chosenPlay), lastRand)
+    // println(s"Jogadas possiveis: $possiblePlays")
+    val play = possiblePlays(chosenPlay)
+
+    //println(s"Jogada na posicao: $play")
+    (play, lastRand)
   }
 
-  def chooseComputerMove(board: Board, lstOpenCoords: List[Coord2D], rand: MyRandom, player: Stone, settings: Settings): (Coord2D, MyRandom) = {
+  def chooseComputerMove(board: Board, lstOpenCoords: List[Coord2D], rand: MyRandom, player: Stone): (Coord2D, MyRandom) = {
     val (smartOrDumb, newRand) = rand.nextInt(11) // 0-10 is the range of "intelligence" for the computer strategy
-    smartOrDumb >= settings.difficulty match {
+    smartOrDumb > Settings.difficulty match {
       case false => playSmart(board, newRand, player, lstOpenCoords)
       case true => randomMove(lstOpenCoords, newRand)
     }
@@ -242,9 +248,11 @@ object Game {
         val (boardAfterCapture, opponentCaptured) =
           captureGroupStones(boardAfterPlay, state.currentPlayer)
 
+        val openCoordsAfterCapture = listPositions(boardAfterPlay).filter { case (pos) => stoneAt(pos, boardAfterPlay) == Stone.Empty }
+
         val newState = GameState(
           board = boardAfterCapture,
-          openCoords = newOpenCoords,
+          openCoords = openCoordsAfterCapture,
           currentPlayer = if (state.currentPlayer == Stone.Black) Stone.White else Stone.Black,
           playerCaptured = if (state.currentPlayer != Stone.Black) 0 else opponentCaptured,
           computerCaptured = if(state.currentPlayer != Stone.Black) opponentCaptured else 0
