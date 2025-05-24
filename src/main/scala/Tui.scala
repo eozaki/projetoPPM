@@ -4,7 +4,7 @@ import scala.io.StdIn.readLine
 class Tui {
   object TUI {
     def start(): Unit = {
-      val settings = Settings(5, 5, 3, 10000L, 0.0)
+      val settings = Settings(5, 5, 3, 10000L, 0)
       val initialState = criarEstadoInicial(settings)
       mainMenu(settings, List(initialState))
     }
@@ -34,8 +34,8 @@ class Tui {
           val t = lerNumero("Tempo máximo por jogada (ms): ")
           mainMenu(settings.copy(timeLimitMillis = t.toLong), history)
         case "5" =>
-          val d = readLine("Dificuldade (0 ~ 1 - agressividade do computador ao jogar): ").toDouble
-          d >= 0.0 && d <= 1.0 match {
+          val d = readLine("Dificuldade (inteiro 0 a 10 - agressividade do computador ao jogar): ").toInt
+          d >= 0 && d <= 10 match {
             case true => mainMenu(settings.copy(difficulty = d), history)
             case false => println(s"Dificuldade inválida ($d). A dificuldade anterior foi mantida.")
           }
@@ -132,8 +132,10 @@ class Tui {
       val rand = MyRandom(System.currentTimeMillis())
 
       println("Computador (branco) a jogar...")
-      val (coord, newRand) = randomMove(state.openCoords, rand)
+      val (coord, _newRand) = chooseComputerMove(state.board, state.openCoords, rand, Stone.White, settings)
       val (newState, maybeVictory) = makeMove(state, coord, settings.captureGoal)
+
+      println(s"Jogada escolhida para o computador: $coord")
 
       maybeVictory match {
         case Some(msg) =>
@@ -143,6 +145,7 @@ class Tui {
         case None =>
           jogoMenu(settings, newState :: history)
       }
+      val (latestBoard, _i) = Game.captureGroupStones(newState.board, Stone.White)
       Game.displayBoard(newState.board)
       println()
       jogoMenu(settings, newState :: history)
@@ -249,6 +252,5 @@ class Tui {
     def extrairBloco(lines: List[String], inicio: String, fim: Set[String]): List[String] = {
       lines.dropWhile(_ != inicio).drop(1).takeWhile(line => !fim.contains(line.trim))
     }
-
   }
 }

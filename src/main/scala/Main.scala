@@ -5,7 +5,7 @@ Luís Pinto
 Erick Ozaki
 */
 
-import Game.{Board, Coord2D, MyRandom, Stone, playRandomly, populateBoard, populateRows, randomMove}
+import Game.{Board, Coord2D, Stone, populateBoard, populateRows, randomMove}
 import Game._
 import Game.Stone.Stone
 import scala.io.StdIn.readLine

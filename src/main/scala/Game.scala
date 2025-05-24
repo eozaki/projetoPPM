@@ -1,7 +1,6 @@
 import Game._
 import Game.Stone.Stone
 
-import scala.List
 import scala.annotation.tailrec
 
 case class Game(board: Board, coords: List[Coord2D]) {
@@ -32,7 +31,6 @@ object Game {
     }
     case (c, l) if !validCoord(c, l) => (None, lstOpenCoords)
   }
-
 
   def surroundingCoords(coord: Coord2D, board: Board): List[Coord2D] = {
     val (row, col) = coord
@@ -78,9 +76,6 @@ object Game {
     val g = samePlayerRegion(List(start), Set(), player, board).toSet
     val l = liberties(g.toList, board)
 
-//    println(g)
-//    println(l)
-
     (g, l)
   }
 
@@ -112,6 +107,9 @@ object Game {
     val positionsList = listPositions(board)
     visitPositions(positionsList, board, opponent)
   }
+
+  def stoneAt(pos: Coord2D, board: Board): Stone =
+    stoneAt(pos._1, pos._2, board)
 
   def stoneAt(row: Int, col: Int, board: Board): Stone = {
     if (row < 1 || row > board.length || col < 1 || col > board.head.length) Stone.Empty
@@ -187,20 +185,6 @@ object Game {
       displayRow(tail)
   }
 
-  // T1
-  trait Random {
-    def nextInt(x: Int): (Int, Random)
-  }
-
-  case class MyRandom(seed: Long) extends Random {
-    def nextInt(x: Int): (Int, MyRandom) = { // recebe um Int e devolve in Int e um random
-      val newSeed = (seed * 0x11111111L + 0xBL) & 0xFFFFFFFFFFFFL // atualiza a seed com um novo valor
-      val nextRandom = MyRandom(newSeed) // cria um novo MyRandom com a nova seed
-      val n = (((newSeed >>> 16).toInt)) % x // gera um x aleatório [0, n-1]
-      (if (n < 0) -n else n, nextRandom) // garante que o x está entre [0, n-1]
-    }
-  }
-
   def randomMove(lstOpenCoords: List[Coord2D], rand: MyRandom): (Coord2D, MyRandom) = lstOpenCoords match {
     case List() => throw new IllegalArgumentException("Não há coordenadas livres disponíveis.") // caso a lista esteja vazia
     case list =>
@@ -209,19 +193,32 @@ object Game {
       (chosenCoord, newRand) // Retorna a coord e nova seed para números aleatórios
   }
 
+  def playSmart(board: Board, rand: MyRandom, player: Stone, lstOpenCoords: List[Coord2D]): (Coord2D, MyRandom) = {
+    val opponentPositions = findAttackableStonesFor(opponentOf(player), board)
+//    println(s"Posicoes adversarias a atacar: $opponentPositions")
 
-  // T3
-  def playRandomly(board: Board, r: MyRandom, player: Stone, lstOpenCoords: List[Coord2D],
-                   f: (List[Coord2D], MyRandom) => (Coord2D, MyRandom)): (Board, MyRandom, List[Coord2D]) = {
+    val (positionToAttack, newRand) = rand.nextInt(opponentPositions.length)
+//    println(s"Posicao escolhida para atacar: $positionToAttack")
 
-    val (coordAleat, novaSeed) = f(lstOpenCoords, r)
-    val (updatedBoard, updatedOpenCoords: List[Coord2D]) = play(board, player, coordAleat, lstOpenCoords)
+    val possiblePlays = surroundingCoords(opponentPositions(positionToAttack), board)
+      .filter { case coord2D => lstOpenCoords.contains(coord2D) }
+    val (chosenPlay, lastRand) = rand.nextInt(possiblePlays.length)
 
-    updatedBoard match {
-      case Some(updatedBoard) => (updatedBoard, novaSeed, updatedOpenCoords)
-      case None => (board, novaSeed, lstOpenCoords)
+    (possiblePlays(chosenPlay), lastRand)
+  }
+
+  def chooseComputerMove(board: Board, lstOpenCoords: List[Coord2D], rand: MyRandom, player: Stone, settings: Settings): (Coord2D, MyRandom) = {
+    val (smartOrDumb, newRand) = rand.nextInt(11) // 0-10 is the range of "intelligence" for the computer strategy
+    smartOrDumb >= settings.difficulty match {
+      case false => playSmart(board, newRand, player, lstOpenCoords)
+      case true => randomMove(lstOpenCoords, newRand)
     }
   }
+
+  def findAttackableStonesFor(player: Stone, board: Board): List[Coord2D] =
+    listPositions(board).filter { case pos => stoneAt(pos, board) == player && hasFreePositionAround(pos, board) }
+
+  def opponentOf(player: Stone) = if(player == Stone.Black) Stone.White else Stone.Black
 
   // T6 LP
   def checkVictory(playerCaptured: Int, computerCaptured: Int, captureGoal: Int): Option[String] = {
