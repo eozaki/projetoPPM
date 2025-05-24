@@ -1,0 +1,1 @@
+case class Settings(boardWidth: Int, boardHeight: Int, captureGoal: Int, timeLimitMillis: Long, difficulty: Int)

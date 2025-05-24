@@ -1,13 +1,10 @@
 import Game._
 import scala.io.StdIn.readLine
 
-class tui {
+class Tui {
   object TUI {
-
-    case class Settings(boardWidth: Int, boardHeight: Int, captureGoal: Int, timeLimitMillis: Long, difficulty: String)
-
     def start(): Unit = {
-      val settings = Settings(5, 5, 3, 10000L, "facil")
+      val settings = Settings(5, 5, 3, 10000L, 0)
       val initialState = criarEstadoInicial(settings)
       mainMenu(settings, List(initialState))
     }
@@ -37,8 +34,11 @@ class tui {
           val t = lerNumero("Tempo máximo por jogada (ms): ")
           mainMenu(settings.copy(timeLimitMillis = t.toLong), history)
         case "5" =>
-          val d = readLine("Dificuldade (facil / dificil): ")
-          mainMenu(settings.copy(difficulty = d), history)
+          val d = readLine("Dificuldade (inteiro 0 a 10 - agressividade do computador ao jogar): ").toInt
+          d >= 0 && d <= 10 match {
+            case true => mainMenu(settings.copy(difficulty = d), history)
+            case false => println(s"Dificuldade inválida ($d). A dificuldade anterior foi mantida.")
+          }
         case "6" =>
           val nome = readLine("Nome do ficheiro (sem .txt): ").trim
           carregarJogo(nome) match {
@@ -132,8 +132,10 @@ class tui {
       val rand = MyRandom(System.currentTimeMillis())
 
       println("Computador (branco) a jogar...")
-      val (coord, newRand) = randomMove(state.openCoords, rand)
+      val (coord, _newRand) = chooseComputerMove(state.board, state.openCoords, rand, Stone.White, settings)
       val (newState, maybeVictory) = makeMove(state, coord, settings.captureGoal)
+
+      println(s"Jogada escolhida para o computador: $coord")
 
       maybeVictory match {
         case Some(msg) =>
@@ -143,6 +145,7 @@ class tui {
         case None =>
           jogoMenu(settings, newState :: history)
       }
+      val (latestBoard, _i) = Game.captureGroupStones(newState.board, Stone.White)
       Game.displayBoard(newState.board)
       println()
       jogoMenu(settings, newState :: history)
@@ -249,6 +252,5 @@ class tui {
     def extrairBloco(lines: List[String], inicio: String, fim: Set[String]): List[String] = {
       lines.dropWhile(_ != inicio).drop(1).takeWhile(line => !fim.contains(line.trim))
     }
-
   }
 }
