@@ -1,4 +1,9 @@
 import Game._
+import javafx.application.Application
+import javafx.fxml.FXMLLoader
+import javafx.scene.{Parent, Scene}
+import javafx.stage.Stage
+
 import scala.io.StdIn.readLine
 
 object Tui {
@@ -16,6 +21,7 @@ object Tui {
     println("4. Definir tempo máximo por jogada")
     println("5. Definir nível de dificuldade")
     println("6. Carregar jogo")
+    println("7. Jogar na GUI")
     println("0. Sair")
 
     readLine("Escolha uma opção: ") match {
@@ -56,6 +62,9 @@ object Tui {
             println("Erro ao carregar jogo!")
             mainMenu(history)
         }
+      case "7" => {
+        Application.launch(classOf[AtariGO])
+      }
       case "0" =>
         println("A sair do jogo. Até breve!")
       case _ =>

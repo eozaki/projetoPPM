@@ -165,7 +165,6 @@ class GUI {
     currentState = Some(newState)
     gameHistory = List()
     atualizarTabuleiro(newState)
-    mostrarPopup("Jogo reiniciado.")
 
   }
 

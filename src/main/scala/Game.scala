@@ -4,8 +4,10 @@ import Game.Stone.Stone
 import scala.annotation.tailrec
 
 case class Game(board: Board, coords: List[Coord2D]) {
-  def play(board: Board, player: Stone, coord: Coord2D, lstOpenCoords: List[Coord2D]):(Option[Board], List[Coord2D]) =
-    Game.play(board, player, coord, lstOpenCoords)
+  def play(board: Board, player: Stone, coord: Coord2D, lstOpenCoords: List[Coord2D]):(Option[Board], List[Coord2D]) = stoneAt(coord, board) match {
+    case Stone.Empty => Game.play(board, player, coord, lstOpenCoords)
+    case _ => (None, lstOpenCoords)
+  }
 
   def captureGroupStones(board: Board, player: Stone): (Board, Int) =
     Game.captureGroupStones(board, player)
