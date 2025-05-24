@@ -26,7 +26,7 @@ object Game {
     case (c, l) if validCoord(c, l) => {
       val newBoard = playRow(c._1, c._2, player, board)
       val l = remainingCoords(lstOpenCoords, coord)
-      displayBoard(newBoard)
+      displayBoard(newBoard) // n ter aña mm funçao
       println(l)
       (Some(newBoard), l)
     }
@@ -209,6 +209,7 @@ object Game {
       (chosenCoord, newRand) // Retorna a coord e nova seed para números aleatórios
   }
 
+
   // T3
   def playRandomly(board: Board, r: MyRandom, player: Stone, lstOpenCoords: List[Coord2D],
                    f: (List[Coord2D], MyRandom) => (Coord2D, MyRandom)): (Board, MyRandom, List[Coord2D]) = {
@@ -221,4 +222,56 @@ object Game {
       case None => (board, novaSeed, lstOpenCoords)
     }
   }
+
+  // T6 LP
+  def checkVictory(playerCaptured: Int, computerCaptured: Int, captureGoal: Int): Option[String] = {
+    if (playerCaptured >= captureGoal)
+      Some("Jogador venceu")
+    else if (computerCaptured >= captureGoal)
+      Some("Computador venceu")
+    else None
+  }
+  // Na função de captura passar o número de peças já captadas por ambos
+
+  // função auxiliar para juntar: jogada, captura (atualizar valores) e verificar vitória
+  def makeMove(state: GameState, coord: Coord2D, captureGoal: Int): (GameState, Option[String]) = {
+    val (maybeNewBoard, newOpenCoords) = play(state.board, state.currentPlayer, coord, state.openCoords)
+
+    maybeNewBoard match {
+      case None =>
+        // Jogada inválida → devolve o mesmo estado, sem vitória
+        (state, None)
+
+      case Some(boardAfterPlay) =>
+        val (boardAfterCapture, opponentCaptured) =
+          captureGroupStones(boardAfterPlay, state.currentPlayer)
+
+        val newState = GameState(
+          board = boardAfterCapture,
+          openCoords = newOpenCoords,
+          currentPlayer = if (state.currentPlayer == Stone.Black) Stone.White else Stone.Black,
+          playerCaptured = if (state.currentPlayer != Stone.Black) 0 else opponentCaptured,
+          computerCaptured = if(state.currentPlayer != Stone.Black) opponentCaptured else 0
+        )
+
+        val result = checkVictory(newState.playerCaptured, newState.computerCaptured, captureGoal)
+
+        (newState, result)
+    }
+  }
+
+  // T7 LP - medições calculadas no main
+  def isTimeExceeded(startTime: Long, currentTime: Long, timeLimitMillis: Long): Boolean =
+    (currentTime - startTime) > timeLimitMillis
+
+  case class GameState(board: Board, openCoords: List[Coord2D], currentPlayer: Stone, playerCaptured: Int, computerCaptured: Int)
+    type GameHistory = List[GameState]
+
+  // undo funcional:
+  def undo(history: GameHistory): (Option[GameState], GameHistory) = history match {
+    case current :: previous :: rest => (Some(previous), previous :: rest)
+    case current :: Nil => (Some(current), List(current)) // não há mais nada para desfazer
+    case Nil => (None, Nil) // estado inválido
+  }
+
 }
