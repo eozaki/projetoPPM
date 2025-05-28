@@ -45,7 +45,7 @@ object Tui {
 
         d >= 0 && d <= 10 match {
           case true => {
-            Settings.difficulty = 0
+            Settings.difficulty = d
             mainMenu(history)
           }
           case false => println(s"Dificuldade inválida ($d). A dificuldade anterior foi mantida.")
@@ -157,12 +157,14 @@ object Tui {
         //1println(s"🏁 $msg")
         mainMenu(newState :: history)
       case None =>
+        Game.displayBoard(newState.board)
+        println()
         jogoMenu(newState :: history)
     }
-    val (latestBoard, _i) = Game.captureGroupStones(newState.board, Stone.White)
-    Game.displayBoard(newState.board)
-    println()
-    jogoMenu(newState :: history)
+    //val (latestBoard, _i) = Game.captureGroupStones(newState.board, Stone.White)
+    //Game.displayBoard(newState.board)
+    //println()
+    //jogoMenu(newState :: history)
   }
 
   def criarEstadoInicial(): GameState = {

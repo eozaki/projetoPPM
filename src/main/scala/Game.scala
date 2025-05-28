@@ -250,6 +250,13 @@ object Game {
         val (boardAfterCapture, opponentCaptured) =
           captureGroupStones(boardAfterPlay, state.currentPlayer)
 
+        // verifica suicídio: a pedra jogada ficou sem liberdades E não capturou nada
+        val (grupoNovo, temLib) = groupsAndLiberties(coord, boardAfterCapture, state.currentPlayer)
+        if (!temLib && opponentCaptured == 0) {
+          println("Jogada sem liberdades detectada.")
+          return (state, None) // ignora a jogada
+        }
+
         val openCoordsAfterCapture = listPositions(boardAfterPlay).filter { case (pos) => stoneAt(pos, boardAfterPlay) == Stone.Empty }
 
         val newState = GameState(
