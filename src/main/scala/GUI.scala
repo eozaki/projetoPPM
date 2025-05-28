@@ -90,7 +90,7 @@ class GUI {
       currentState match {
         case Some(state) if state.currentPlayer == Stone.Black =>
           // guarda antes da jogada
-          gameHistory = state :: gameHistory
+          //gameHistory = state :: gameHistory
           val (nextState, maybeVictory) = makeMove(state, coord, Settings.captureGoal)
 
           if (nextState.board != state.board) {
