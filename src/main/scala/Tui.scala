@@ -168,8 +168,8 @@ object Tui {
   }
 
   def criarEstadoInicial(): GameState = {
-    val board = populateBoard(Settings.boardHeight, Settings.boardWidth)
-    val coords = populateRows(Settings.boardHeight, Settings.boardWidth)
+    val board = populateBoard(Settings.boardWidth, Settings.boardHeight)
+    val coords = populateRows(Settings.boardWidth, Settings.boardHeight)
     GameState(board, coords, Stone.Black, 0, 0)
   }
 

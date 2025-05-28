@@ -91,7 +91,7 @@ class GUI {
         case Some(state) if state.currentPlayer == Stone.Black =>
           // guarda antes da jogada
           gameHistory = state :: gameHistory
-          val (nextState, maybeVictory) = makeMove(state, coord, 3)
+          val (nextState, maybeVictory) = makeMove(state, coord, Settings.captureGoal)
 
           if (nextState.board != state.board) {
             // Jogada válida
@@ -117,7 +117,7 @@ class GUI {
     gameHistory = state :: gameHistory
 
     val (coordBot, _) = chooseComputerMove(state.board, state.openCoords, MyRandom(System.currentTimeMillis()), Stone.White)
-    val (newState, maybeVictory) = makeMove(state, coordBot, 3)
+    val (newState, maybeVictory) = makeMove(state, coordBot, Settings.captureGoal)
 
     currentState = Some(newState)
     atualizarTabuleiro(newState)

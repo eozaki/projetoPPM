@@ -263,8 +263,9 @@ object Game {
           board = boardAfterCapture,
           openCoords = openCoordsAfterCapture,
           currentPlayer = if (state.currentPlayer == Stone.Black) Stone.White else Stone.Black,
-          playerCaptured = if (state.currentPlayer != Stone.Black) 0 else opponentCaptured,
-          computerCaptured = if(state.currentPlayer != Stone.Black) opponentCaptured else 0
+          playerCaptured = if (state.currentPlayer == Stone.Black) state.playerCaptured + opponentCaptured else state.playerCaptured,
+
+          computerCaptured = if (state.currentPlayer == Stone.White) state.computerCaptured + opponentCaptured else state.computerCaptured
         )
 
         val result = checkVictory(newState.playerCaptured, newState.computerCaptured, captureGoal)
